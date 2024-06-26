@@ -19,7 +19,8 @@ import java.util.List;
 public class OrderDb {
     @Id
     @Column(name = "ORDER_ID")
-    @SequenceGenerator(name = "orderIdGenerator", sequenceName = "ORDER_SEQUENCE", allocationSize = 1)
+    @SequenceGenerator(name = "orderIdGenerator", sequenceName = "ORDER_SEQUENCE",
+            allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "orderIdGenerator")
     private Long id;
 

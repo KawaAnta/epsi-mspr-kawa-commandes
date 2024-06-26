@@ -92,7 +92,7 @@ public class OrderApiDelegateImpl implements OrdersApiDelegate {
     }
 
     @Override
-    public ResponseEntity<Void> updateOrder(Long id, OrderDto OrderDto) {
+    public ResponseEntity<Void> updateOrder(Long id, OrderDto orderDto) {
         try {
             // Récupérer le produit existant avec l'ID spécifié
             Order Order = orderService.getById(id);
@@ -110,7 +110,7 @@ public class OrderApiDelegateImpl implements OrdersApiDelegate {
             }
 
             // Copier les propriétés non null de OrderDto vers Order
-            copyProperties(OrderDto, Order);
+            copyProperties(orderDto, Order);
 
             // Enregistrer les modifications
             orderService.save(Order);
