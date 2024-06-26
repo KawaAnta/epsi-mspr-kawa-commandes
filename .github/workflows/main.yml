@@ -45,7 +45,7 @@ jobs:
       with:
           name: report.xml
           path:
-            ${{ github.workspace }}/target/coverage/jacoco.xml
+            ${{ github.workspace }}/target/coverage/jacoco-resources/jacoco.xml
 
     - name: Debug JaCoCo report path
       run: ls -R ${{ github.workspace }}/target/coverage/
@@ -59,7 +59,7 @@ jobs:
       uses: madrapps/jacoco-report@v1.6.1
       with:
         paths:
-          ${{ github.workspace }}/target/coverage/*.xml
+          ${{ github.workspace }}/target/coverage/jacoco-resources/*.xml
         token: ${{ secrets.GITHUB_TOKEN }}
         min-coverage-overall: 95
         min-coverage-changed-files: 10
