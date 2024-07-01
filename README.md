@@ -72,9 +72,9 @@ docker compose up
 
 Currently, the Docker build is not including tests.
 
-URL API : https://localhost:8081
+URL API : https://localhost:8083
 
-URL Data base: https://localhost:5433
+URL Data base: https://localhost:5435
 
 ### Running local application
 

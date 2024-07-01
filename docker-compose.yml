@@ -10,7 +10,7 @@ services:
             - POSTGRES_PASSWORD=${DB_PASSWORD}
             - POSTGRES_DB=order
         ports:
-            - '5433:5432'
+            - '5435:5432'
 
     client:
         container_name: order_app
@@ -18,7 +18,7 @@ services:
             context: .
             dockerfile: Dockerfile
         ports:
-            - '8081:8080'
+            - '8083:8080'
         environment:
             - SPRING_DATASOURCE_URL=jdbc:postgresql://psql-db:5432/order
             - SPRING_DATASOURCE_USERNAME=admin
