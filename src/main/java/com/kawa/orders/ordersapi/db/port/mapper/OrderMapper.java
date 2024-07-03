@@ -2,6 +2,7 @@ package com.kawa.orders.ordersapi.db.port.mapper;
 
 import com.kawa.orders.ordersapi.db.models.OrderDb;
 import com.kawa.orders.ordersapi.domain.service.order.dto.Order;
+import com.kawa.orders.ordersapi.dto.OrderResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValueMappingStrategy;
 
@@ -37,4 +38,15 @@ public interface OrderMapper {
      * @return liste des objets DTO
      */
     List<Order> mapListToDomain(List<OrderDb> entities);
+
+    /**
+     * Maps un order entity à ReviewResponseDTO.
+     *
+     * @return mapped ReviewResponseDTO
+     */
+    default OrderResponseDTO mapToOrderResponseDTO(Order order) {
+        OrderResponseDTO responseDTO = new OrderResponseDTO();
+        responseDTO.setProductIds(order.getProductIds());
+        return responseDTO;
+    }
 }

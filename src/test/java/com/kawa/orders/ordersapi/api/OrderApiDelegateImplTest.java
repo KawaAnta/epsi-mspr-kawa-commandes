@@ -1,8 +1,10 @@
 package com.kawa.orders.ordersapi.api;
 
 import com.kawa.orders.generated.api.model.OrderDto;
+import com.kawa.orders.ordersapi.db.port.mapper.OrderMapper;
 import com.kawa.orders.ordersapi.domain.service.order.OrderService;
 import com.kawa.orders.ordersapi.domain.service.order.dto.Order;
+import com.kawa.orders.ordersapi.message.OrderMessageProducer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,11 +28,17 @@ class OrderApiDelegateImplTest {
     @Mock
     private OrderService mockOrderService;
 
+    @Mock
+    private OrderMapper mockOrderMapper;
+
+    @Mock
+    private OrderMessageProducer orderMessageProducer;
+
     private OrderApiDelegateImpl orderApiDelegateImplUnderTest;
 
     @BeforeEach
     void setUp() {
-        orderApiDelegateImplUnderTest = new OrderApiDelegateImpl(mockOrderService);
+        orderApiDelegateImplUnderTest = new OrderApiDelegateImpl(mockOrderService, orderMessageProducer, mockOrderMapper);
     }
 
     @Test

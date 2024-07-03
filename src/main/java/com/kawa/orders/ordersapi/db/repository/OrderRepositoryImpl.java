@@ -7,7 +7,7 @@ import com.kawa.orders.ordersapi.domain.service.order.dto.Order;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.logging.Logger;
 

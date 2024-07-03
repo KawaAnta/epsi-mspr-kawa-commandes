@@ -3,14 +3,17 @@ package com.kawa.orders.ordersapi.api;
 
 import com.kawa.orders.generated.api.model.OrderDto;
 import com.kawa.orders.generated.api.server.OrdersApiDelegate;
+import com.kawa.orders.ordersapi.db.port.mapper.OrderMapper;
 import com.kawa.orders.ordersapi.domain.service.order.OrderService;
 import com.kawa.orders.ordersapi.domain.service.order.dto.Order;
+import com.kawa.orders.ordersapi.dto.OrderResponseDTO;
+import com.kawa.orders.ordersapi.message.OrderMessageProducer;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,9 +26,15 @@ import java.util.List;
 @Component
 public class OrderApiDelegateImpl implements OrdersApiDelegate {
     private final OrderService orderService;
+    private final OrderMessageProducer orderMessageProducer;
+    private final OrderMapper orderMapper;
 
-    public OrderApiDelegateImpl(OrderService orderService) {
+    public OrderApiDelegateImpl(OrderService orderService,
+                                OrderMessageProducer orderMessageProducer,
+                                OrderMapper orderMapper) {
         this.orderService = orderService;
+        this.orderMessageProducer = orderMessageProducer;
+        this.orderMapper = orderMapper;
     }
 
     @Override
@@ -84,6 +93,10 @@ public class OrderApiDelegateImpl implements OrdersApiDelegate {
             order.setCreatedAt(LocalDateTime.now());
             order.setProductIds(orderDto.getProductsIds());
             Order savedOrder = orderService.save(order);
+
+            OrderResponseDTO responseDTO = orderMapper.mapToOrderResponseDTO(savedOrder);
+            orderMessageProducer.sendMessage(responseDTO);
+
             return ResponseEntity.status(HttpStatus.CREATED).body(savedOrder.getId().toString());
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

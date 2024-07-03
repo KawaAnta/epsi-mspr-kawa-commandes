@@ -1,4 +1,4 @@
-package com.kawa.orders.ordersapi.security;
+package com.kawa.orders.ordersapi.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
