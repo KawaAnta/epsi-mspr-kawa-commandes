@@ -37,7 +37,6 @@ class OrderRepositoryImplTest {
         // GIVEN
         final List<OrderDb> orderDbs = List.of(new OrderDb(0L, 0L, LocalDateTime.of(2020, 1, 1, 0, 0, 0), List.of(0L)));
         when(mockDbRepository.findAll()).thenReturn(orderDbs);
-
         when(mockMapper.mapToDomain(any(OrderDb.class))).thenReturn(Order.builder().build());
 
         // WHEN
@@ -61,10 +60,23 @@ class OrderRepositoryImplTest {
     }
 
     @Test
+    void testGetById_OrderDbRepositoryReturnsOrder() {
+        // GIVEN
+        final OrderDb orderDb = new OrderDb(0L, 0L, LocalDateTime.of(2020, 1, 1, 0, 0, 0), List.of(0L));
+        when(mockDbRepository.findById(0L)).thenReturn(Optional.of(orderDb));
+        when(mockMapper.mapToDomain(orderDb)).thenReturn(Order.builder().build());
+
+        // WHEN
+        final Order result = orderRepositoryImplUnderTest.getById(0L);
+
+        // THEN
+        assertThat(result).isNotNull();
+    }
+
+    @Test
     void testGetById_OrderDbRepositoryReturnsAbsent() {
         // GIVEN
-        lenient().when(mockDbRepository.findById(0L)).thenReturn(Optional.empty());
-        lenient().when(mockMapper.mapToDomain(any(OrderDb.class))).thenReturn(Order.builder().build());
+        when(mockDbRepository.findById(0L)).thenReturn(Optional.empty());
 
         // WHEN
         final Order result = orderRepositoryImplUnderTest.getById(0L);
@@ -83,6 +95,18 @@ class OrderRepositoryImplTest {
     }
 
     @Test
+    void testDeleteById_Exception() {
+        // GIVEN
+        doThrow(new RuntimeException("Error")).when(mockDbRepository).deleteById(0L);
+
+        // WHEN
+        orderRepositoryImplUnderTest.deleteById(0L);
+
+        // THEN
+        verify(mockDbRepository).deleteById(0L);
+    }
+
+    @Test
     void testSave() {
         // GIVEN
         final Order order = Order.builder().build();
@@ -90,10 +114,7 @@ class OrderRepositoryImplTest {
 
         final OrderDb orderDb = new OrderDb(0L, 0L, LocalDateTime.of(2020, 1, 1, 0, 0, 0), List.of(0L));
         when(mockMapper.mapFromDomain(any(Order.class))).thenReturn(orderDb);
-
-        final OrderDb orderDb1 = new OrderDb(0L, 0L, LocalDateTime.of(2020, 1, 1, 0, 0, 0), List.of(0L));
-        when(mockDbRepository.save(any(OrderDb.class))).thenReturn(orderDb1);
-
+        when(mockDbRepository.save(any(OrderDb.class))).thenReturn(orderDb);
         when(mockMapper.mapToDomain(any(OrderDb.class))).thenReturn(order);
 
         // WHEN
@@ -102,5 +123,22 @@ class OrderRepositoryImplTest {
         // THEN
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(orderDb.getId());
+    }
+
+    @Test
+    void testSave_Exception() {
+        // GIVEN
+        final Order order = Order.builder().build();
+        order.setId(0L);
+
+        final OrderDb orderDb = new OrderDb(0L, 0L, LocalDateTime.of(2020, 1, 1, 0, 0, 0), List.of(0L));
+        when(mockMapper.mapFromDomain(any(Order.class))).thenReturn(orderDb);
+        when(mockDbRepository.save(any(OrderDb.class))).thenThrow(new RuntimeException("Error"));
+
+        // WHEN
+        final Order result = orderRepositoryImplUnderTest.save(order);
+
+        // THEN
+        assertThat(result).isNull();
     }
 }
